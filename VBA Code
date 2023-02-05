@@ -1,0 +1,55 @@
+Sub MergeTB()
+    Dim ws1 As Worksheet, ws2 As Worksheet, ws3 As Worksheet
+    Dim lastRow1 As Long, lastRow2 As Long, lastRow3 As Long
+    Dim i As Long, j As Long
+    Dim flag As Boolean
+    
+    Set ws1 = ThisWorkbook.Sheets("Sheet1")
+    Set ws2 = ThisWorkbook.Sheets("Sheet2")
+    Set ws3 = ThisWorkbook.Sheets("Sheet3")
+    
+    lastRow1 = ws1.Cells(ws1.Rows.Count, "A").End(xlUp).Row
+    lastRow2 = ws2.Cells(ws2.Rows.Count, "A").End(xlUp).Row
+    lastRow3 = ws3.Cells(ws3.Rows.Count, "A").End(xlUp).Row + 1
+    
+    For i = 2 To lastRow1
+        flag = False
+        For j = 2 To lastRow2
+            If ws1.Cells(i, 1).Value = ws2.Cells(j, 1).Value Then
+                flag = True
+                Exit For
+            End If
+        Next j
+        
+        ws3.Cells(lastRow3, 1).Value = ws1.Cells(i, 1).Value
+        ws3.Cells(lastRow3, 2).Value = ws1.Cells(i, 2).Value
+        ws3.Cells(lastRow3, 3).Value = ws1.Cells(i, 3).Value
+        ws3.Cells(lastRow3, 4).Value = ws2.Cells(j, 3).Value
+        
+        If Not flag Then
+            ws3.Cells(lastRow3, 1).Interior.Color = RGB(255, 0, 0)
+        End If
+        
+        lastRow3 = lastRow3 + 1
+    Next i
+    
+    For j = 2 To lastRow2
+        flag = False
+        For i = 2 To lastRow1
+            If ws2.Cells(j, 1).Value = ws1.Cells(i, 1).Value Then
+                flag = True
+                Exit For
+            End If
+        Next i
+        
+        If Not flag Then
+            ws3.Cells(lastRow3, 1).Value = ws2.Cells(j, 1).Value
+            ws3.Cells(lastRow3, 2).Value = ws2.Cells(j, 2).Value
+            ws3.Cells(lastRow3, 3).Value = 0
+            ws3.Cells(lastRow3, 4).Value = ws2.Cells(j, 3).Value
+            ws3.Cells(lastRow3, 1).Interior.Color = RGB(255, 0, 0)
+            lastRow3 = lastRow3 + 1
+        End If
+    Next j
+End Sub
+
